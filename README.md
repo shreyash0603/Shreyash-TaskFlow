@@ -1,7 +1,7 @@
 # TaskFlow - Distributed Task Scheduler with Dependency Resolution
 
 TaskFlow is a web-based application that simulates a distributed task scheduler. It processes tasks that form a **Directed Acyclic Graph (DAG)**, ensuring that dependencies are respected. It also handles **task failures**, supports **automatic retries**, detects **deadlocks**, and visualizes valid execution paths.
-![TaskFlow](https://github.com/user-attachments/assets/8b80a4d7-c181-4e44-a3c1-ea9038430b45)
+
 
 ---
 
