@@ -147,6 +147,11 @@ export function DagVisualization({ tasks, selectedTaskId, onNodeClick }: DagVisu
   const viewBoxWidth = Math.max(dagWidth, containerSize.width);
   const viewBoxHeight = Math.max(dagHeight, containerSize.height);
 
+  const nodePositions: { [key: string]: { x: number; y: number } } = {};
+nodes.forEach((node) => {
+  nodePositions[node.id] = { x: node.x, y: node.y };
+});
+
   return (
     <div id="dag-container" className="w-full h-full overflow-auto bg-muted/30 rounded-lg shadow-inner">
       <svg width={viewBoxWidth} height={viewBoxHeight} className="min-w-full min-h-full">
@@ -164,39 +169,42 @@ export function DagVisualization({ tasks, selectedTaskId, onNodeClick }: DagVisu
         </defs>
         <g transform={`translate(${NODE_WIDTH/2 + 20}, ${NODE_VERTICAL_GAP})`}> {/* Padding around DAG */}
           <AnimatePresence>
-            {edges.map(edge => {
-              const sourceNode = nodes.find(n => n.id === edge.source);
-              const targetNode = nodes.find(n => n.id === edge.target);
-              if (!sourceNode || !targetNode) return null;
+  {edges.map((edge) => {
+    const sourceNode = nodePositions[edge.source];
+    const targetNode = nodePositions[edge.target];
 
-              // Calculate end point for arrow to be just outside target node
-              const dx = targetNode.x - sourceNode.x;
-              const dy = targetNode.y - sourceNode.y;
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              const unitDx = dx / dist;
-              const unitDy = dy / dist;
-              
-              const targetX = targetNode.x - unitDx * (NODE_WIDTH / 2 + 5); // 5 for arrowhead space
-              const targetY = targetNode.y - unitDy * (NODE_HEIGHT / 2 + 5);
+    const targetX = targetNode?.x;
+    const targetY = targetNode?.y;
 
+    const isValid = (v: number | undefined) =>
+      typeof v === 'number' && !Number.isNaN(v);
 
-              return (
-                <motion.line
-                  key={edge.id}
-                  x1={sourceNode.x}
-                  y1={sourceNode.y}
-                  x2={targetX}
-                  y2={targetY}
-                  stroke="hsl(var(--muted-foreground))"
-                  strokeWidth="1.5"
-                  markerEnd="url(#arrowhead)"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                />
-              );
-            })}
+    if (
+      isValid(sourceNode?.x) &&
+      isValid(sourceNode?.y) &&
+      isValid(targetX) &&
+      isValid(targetY)
+    ) {
+      return (
+        <motion.line
+          key={edge.id}
+          x1={sourceNode.x}
+          y1={sourceNode.y}
+          x2={targetX}
+          y2={targetY}
+          stroke="hsl(var(--muted-foreground))"
+          strokeWidth="1.5"
+          markerEnd="url(#arrowhead)"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        />
+      );
+    }
+
+    return null; // skip invalid edge
+  })}
           </AnimatePresence>
           <AnimatePresence>
             {nodes.map(node => (
