@@ -26,10 +26,76 @@ TaskFlow is a web-based application that simulates a distributed task scheduler.
 
 Clone the repository and install packages:
 
+
+### 2. 🏁 Start the Project
+bash
+Copy
+Edit
+npm run dev
+Open http://localhost:3000 to view the app.
+
+### 3. 🧪 How to Use
+Add tasks and define dependencies using the UI.
+
+Click “Start Execution” to simulate task execution.
+
+Tasks will execute in correct topological order.
+
+If a task fails, it retries up to N times.
+
+The visualization updates dynamically as tasks run, succeed, fail, or get skipped due to dependency failure.
+
+⚠️ Assumptions, Limitations & Edge Cases
+✅ Assumptions
+All tasks and dependencies are entered before execution begins.
+
+DAG is valid (no cycles) at the time of creation.
+
+Each task has a simulated success/failure randomly for demonstration.
+
+❌ Limitations
+No real distributed backend execution (currently simulated on frontend).
+
+UI does not persist DAG across refresh.
+
+Error handling is mostly for visualization and not backend-safe.
+
+⚠️ Edge Cases Handled
+Cycles: Cycles in input graph are detected and execution is halted with error.
+
+Deadlocks: If a task fails beyond max retries, all dependent tasks are marked blocked.
+
+Tasks without dependencies run independently.
+
+### 📦 Dependencies
+Package	Purpose
+React	UI Framework
+TypeScript	Static typing
+Tailwind CSS	Styling
+Framer Motion	Animations for graph elements
+clsx	Conditional classNames
+Zustand	State management
+
+Install via:
+
+bash
+Copy
+Edit
+npm install framer-motion tailwindcss clsx zustand
+📝 Additional Notes
+SVG rendering is used instead of external libraries for fine control.
+
+Framer Motion helps with smooth task transitions.
+
+You can extend this project to connect with Firebase or a backend for real execution and persistence.
+
+Contributions and feedback are welcome!
+
 ```bash
 git clone https://github.com/shreyash0603/TaskFlow.git
 cd TaskFlow
 npm install
+
 
 
 
